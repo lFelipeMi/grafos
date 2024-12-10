@@ -31,9 +31,9 @@ adjacencias, liberando a memoria de cada estrutura.
 */
 void liberar_Grafo(Vertice *grafo) 
 {
-    while (grafo) {
+    while (grafo != NULL) {
         Aresta *adj = grafo->lista;
-        while (adj) {
+        while (adj != NULL) {
             Aresta *aux = adj;
             adj = adj->prox;
             free(aux);
@@ -122,6 +122,7 @@ void inserir_Aresta(Vertice *lista, char id1, char id2) {
                     // Inserir a aresta de forma ordenada
                     Aresta **p = &lista->lista;
                     while (*p && (*p)->id < id2) {
+                        *p = (*p)->prox;
                     }
 
                     // Inserir a nova aresta na posição correta, inicio, meio ou fim
@@ -239,7 +240,6 @@ void ler_Grafo(Vertice **grafo) {
             printf("Linha ignorada: formato invalido (%s)\n", linha);
         }
     }
-
     fclose(p);
     printf("Leitura do arquivo concluida.\n");
 }
