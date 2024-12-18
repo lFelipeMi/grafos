@@ -2,15 +2,19 @@
 SRC = luiz_lima_listaadjacencia_epidemia.c
 EXEC = luiz_lima_listaadjacencia_epidemia
 
-# Regras
 all: $(EXEC)
 
 $(EXEC): $(SRC)
-	gcc -g -Wall -o $(EXEC) $(SRC)
+	gcc -ggdb -Werror -pg -Wextra -std=gnu11 -Wno-unused-result -mglibc -Wuninitialized -march=x86-64 -Wpedantic -Wall -o $(EXEC) $(SRC)
 
-clean:
-	rm -f $(EXEC)
-
-# Regra para executar o programa
 run: $(EXEC)
 	./$(EXEC)
+
+clean:
+	rm -vf $(EXEC) gmon.out
+
+clean-saidas:
+	rm -vf *.saida.*
+
+# Regra para limpeza completa
+clean-all: clean clean-saidas
