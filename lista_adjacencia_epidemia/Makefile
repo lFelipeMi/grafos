@@ -1,4 +1,3 @@
-# Nome do arquivo fonte e do executável
 SRC = luiz_lima_listaadjacencia_epidemia.c
 EXEC = luiz_lima_listaadjacencia_epidemia
 
@@ -16,5 +15,4 @@ clean:
 clean-saidas:
 	rm -vf *.saida.*
 
-# Regra para limpeza completa
 clean-all: clean clean-saidas

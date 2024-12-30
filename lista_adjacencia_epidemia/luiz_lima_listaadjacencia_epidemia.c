@@ -43,24 +43,24 @@ void liberar_Grafo(Vertice *grafo)
     }
 }
 
-int verificar_vertice(Vertice *lista, char id) 
+int verificar_vertice(Vertice *grafo, char id) 
 {
-    while (lista && lista->id != id)
-        lista = lista->prox;
-    return lista != NULL;
+    while (grafo && grafo->id != id)
+        grafo = grafo->prox;
+    return grafo != NULL;
 }
 
-void inserir_Vertice(Vertice **vertices, char id, int cond) 
+void inserir_Vertice(Vertice **grafo, char id, int cond) 
 {
     if (id < 65 || id > 90) 
     {
-        printf("ID deve ser uma letra válida!\n");
+        printf("ID deve ser uma letra valida!\n");
         return;
     }
 
-    if (verificar_vertice(*vertices, id)) 
+    if (verificar_vertice(*grafo, id)) 
     {
-        printf("Vértice com ID %c ja existe!\n", id);
+        printf("Vertice com ID %c ja existe!\n", id);
         return;
     }
 
@@ -71,83 +71,83 @@ void inserir_Vertice(Vertice **vertices, char id, int cond)
         novo->cond = cond;
         novo->lista = NULL;
         novo->prox = NULL;
-        if (*vertices == NULL || id < (*vertices)->id) 
+        if (*grafo == NULL || id < (*grafo)->id) 
         {
-            novo->prox = *vertices;
-            *vertices = novo;
+            novo->prox = *grafo;
+            *grafo = novo;
         } 
         else 
         {
-            Vertice *temp = *vertices;
-            while (temp->prox && temp->prox->id < id) 
-            {
+            Vertice *temp = *grafo;
+            while (temp->prox && temp->prox->id < id)
                 temp = temp->prox;
-            }
+
             novo->prox = temp->prox;
             temp->prox = novo;
         }
     } else
-        printf("Erro ao alocar memória!\n");
+        printf("Erro ao alocar memoria!\n");
 }
 
-int verificar_Aresta(Aresta *lista, char id) 
+int verificar_Aresta(Aresta *lista_adj, char id) 
 {
-    while (lista) 
+    while (lista_adj) 
     {
-        if (lista->id == id)
+        if (lista_adj->id == id)
         {
-            return 1; // Aresta já existe
+            return 1; // Aresta ja existe
         }
-        lista = lista->prox;
+        lista_adj = lista_adj->prox;
     }
-    return 0; // Aresta não existe
+    return 0; // Aresta nao existe
 }
 
 // Metodos diferentes de insercao apenas para praticar
-void inserir_Aresta(Vertice *lista, char id1, char id2) 
+void inserir_Aresta(Vertice *grafo, char id1, char id2) 
 {
-    if (verificar_vertice(lista, id1) && verificar_vertice(lista, id2)) 
+    if (verificar_vertice(grafo, id1) && verificar_vertice(grafo, id2)) 
     {
-        while (lista && lista->id != id1)
-            lista = lista->prox;
-        
-
-        if (lista) 
+        while (grafo && grafo->id != id1)
+            grafo = grafo->prox;
+        //nao precisava pois ja sabemos que seria encontrado, gracas a verificacao, mas pra garantir...
+        if (grafo) 
         {
-            if (!verificar_Aresta(lista->lista, id2)) 
+            if (!verificar_Aresta(grafo->lista, id2)) 
             {
                 Aresta *nova = malloc(sizeof(Aresta));
                 if (nova) 
                 {
                     nova->id = id2;
 
-                    Aresta **p = &lista->lista;
-                    while (*p && (*p)->id < id2)
-                        p = &(*p)->prox; 
-                    nova->prox = *p;
-                    *p = nova;
-                } else  
-                    printf("Erro ao alocar memória para aresta.");
-            }
+                    Aresta **lista_adj = &grafo->lista;
+                    while (*lista_adj && (*lista_adj)->id < id2)
+                        lista_adj = &(*lista_adj)->prox;
+
+                    nova->prox = *lista_adj;
+                    *lista_adj = nova;
+                } else 
+                    printf("Erro ao alocar memoria para aresta.");
+            } else
+                printf("Grafo simples, impossivel inserir aresta multipla!\n");
         }
     } else
         printf("Um ou ambos os vertices %c ou %c nao existem!\n", id1, id2);
 }
 
 // "Gambiarra" pra inserir aresta nao direcionada 
-void inserir_aresta_simples(Vertice **lista, char id1, char id2) 
+void inserir_aresta_simples(Vertice **grafo, char id1, char id2) 
 {
-    inserir_Aresta(*lista, id1, id2);
-    inserir_Aresta(*lista, id2, id1);
+    inserir_Aresta(*grafo, id1, id2);
+    inserir_Aresta(*grafo, id2, id1);
 }
 
-int buscar_condicao(const Vertice *inicio, char id) 
+int buscar_condicao(const Vertice *grafo, char id) 
 {
-    while (inicio) 
+    while (grafo) 
     {
-        if (inicio->id == id)
-            return inicio->cond;
-        inicio = inicio->prox;
+        if (grafo->id == id)
+            return grafo->cond;
+        grafo = grafo->prox;
     }
     return -1;
 }
@@ -184,13 +184,13 @@ int calcular_probabilidade(int cond1, int cond2)
 int encontrar_pior(Vertice *grafo, Aresta *lista) 
 {
     int id_pior = lista->id;
-    Vertice *lista_temp = grafo;
-    char pior_cond = buscar_condicao(lista_temp, id_pior);
+    Vertice *grafo_aux = grafo;
+    char pior_cond = buscar_condicao(grafo_aux, id_pior);
     
     lista = lista->prox;
     while (lista && (pior_cond != 3)) 
     {
-        char cond_atual = buscar_condicao(lista_temp, lista->id);
+        char cond_atual = buscar_condicao(grafo_aux, lista->id);
 
         if (cond_atual > pior_cond) 
         {
@@ -237,8 +237,8 @@ void ler_grafo(Vertice **grafo)
 
         linha[strcspn(linha, "\n")] = '\0';
 
-        // Lê o formato esperado: ID1,COND1,ID2,COND2 
-        // Caso nao seja valido o formato pulamos pra proxima
+        // Le o formato esperado: ID1,COND1,ID2,COND2 
+        // Caso nao seja valido o formato, pulamos pra proxima
         if (sscanf(linha, "%c,%d,%c,%d", &id1, &cond1, &id2, &cond2) == 4) {
             if (!verificar_vertice(*grafo, id1))
                 inserir_Vertice(grafo, id1, cond1);
@@ -273,29 +273,29 @@ individuo, uma relacao por linha, em um arquivo texto.
         return;
     }
 
-    Vertice *vertice_atual = grafo;
+    Vertice *grafo_aux = grafo;
 
-    while (vertice_atual) 
+    while (grafo_aux) 
     {
-        Aresta *aresta_atual = vertice_atual->lista;
+        Aresta *lista_adj = grafo_aux->lista;
 
-        while (aresta_atual) 
+        while (lista_adj) 
         {
-            if (vertice_atual->id < aresta_atual->id) 
+            if (grafo_aux->id < lista_adj->id) 
             {
-                int cond_alvo = buscar_condicao(grafo, aresta_atual->id);
+                int cond_alvo = buscar_condicao(grafo, lista_adj->id);
                 if (cond_alvo != -1)
                 {
-                    int probabilidade = calcular_probabilidade(vertice_atual->cond, cond_alvo);
-                    fprintf(p, "%c -> %c: %d%%\n", vertice_atual->id, aresta_atual->id, probabilidade);
+                    int probabilidade = calcular_probabilidade(grafo_aux->cond, cond_alvo);
+                    fprintf(p, "%c -> %c: %d%%\n", grafo_aux->id, lista_adj->id, probabilidade);
                 }
                 else 
-                    printf("Erro: Não foi possível encontrar o vértice %c para cálculo da probabilidade.\n", aresta_atual->id);
+                    printf("Erro: Nao foi possivel encontrar o vertice %c para calculo da probabilidade.\n", lista_adj->id);
             }
-            aresta_atual = aresta_atual->prox;
+            lista_adj = lista_adj->prox;
         }
 
-        vertice_atual = vertice_atual->prox;
+        grafo_aux = grafo_aux->prox;
     }
 
     fclose(p);
@@ -317,17 +317,17 @@ void gravar_total(Vertice *grafo)
         return;
     }
 
-    Vertice *lista_temp1 = grafo;
+    Vertice *grafo_aux = grafo;
 
-    while (lista_temp1)
+    while (grafo_aux)
     {
-        if (lista_temp1->lista) 
+        if (grafo_aux->lista) 
         {
-            char pior = encontrar_pior(grafo, lista_temp1->lista);
-            int probabilidade = calcular_probabilidade(lista_temp1->cond, buscar_condicao(grafo, pior));
-            fprintf(p, "%c: %d%%\n", lista_temp1->id, probabilidade);
+            char pior = encontrar_pior(grafo, grafo_aux->lista);
+            int probabilidade = calcular_probabilidade(grafo_aux->cond, buscar_condicao(grafo, pior));
+            fprintf(p, "%c: %d%%\n", grafo_aux->id, probabilidade);
         }
-        lista_temp1 = lista_temp1->prox;
+        grafo_aux = grafo_aux->prox;
     }
 
     fclose(p);
