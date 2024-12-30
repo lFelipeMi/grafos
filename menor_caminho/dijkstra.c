@@ -3,6 +3,7 @@
 
 typedef struct aresta
 {
+    int orig;
     int dest;
     struct aresta *prox;
 }Aresta;
@@ -59,6 +60,19 @@ void inserir_vertice(Vertice **grafo, int id)
     printf("Erro ao alocar memoria para novo vertice.\n");
 }
 
+Vertice* buscar_vertice(Vertice *grafo, int id)
+{
+    while(grafo)
+    {
+        if(grafo->id == id) return grafo;
+
+        grafo = grafo->prox;
+    }
+
+    printf("Vertice nao encontrado!\n");
+    return NULL;
+}
+
 //0 - Existe // 1 - Nao existe
 int verificar_vertice (Vertice *grafo, int id)
 {
@@ -85,6 +99,7 @@ void inserir_aresta(Vertice **grafo, int id1, int id2)
     Aresta *nova = malloc(sizeof(Aresta));
     if(nova)
     {
+        (*nova).orig = id1;
         (*nova).dest = id2;
 
         Aresta **lista_adj = &(*grafo)->lista_adj;
@@ -105,6 +120,25 @@ void inserir_aresta(Vertice **grafo, int id1, int id2)
     printf("Falha ao alocar memoria!\n");
 }
 
+Aresta* buscar_aresta(Vertice *grafo, int orig, int dest)
+{
+    Vertice *vertice = buscar_vertice(grafo, orig);
+    if (!vertice) {
+        printf("Vertice de origem %d nao encontrado.\n", orig);
+        return NULL;
+    }
+
+    Aresta *lista_adj = vertice->lista_adj;
+    while (lista_adj) {
+        if (lista_adj->dest == dest) return lista_adj;
+
+        lista_adj = lista_adj->prox;
+    }
+
+    printf("Aresta de %d para %d nao encontrada.\n", orig, dest);
+    return NULL;
+}
+
 void imprimir_grafo(Vertice **grafo){
     if(*grafo == NULL)
     {
@@ -115,7 +149,7 @@ void imprimir_grafo(Vertice **grafo){
 
     while(*grafo)
     {
-        printf("\nVertice: %d: ", (*grafo)->id);
+        printf("\n\tVertice %02d: ", (*grafo)->id);
         Aresta *lista_adj = (*grafo)->lista_adj;
         if (!lista_adj) 
         {
@@ -157,6 +191,14 @@ int main()
     inserir_aresta(&grafo, 21, 21);
 
     imprimir_grafo(&grafo);
+    ///////////////////////////////////////////////////
+    printf("\n\n");
+    Vertice *vertice_search = buscar_vertice(grafo, 21);
+    printf("Vertice buscado: %d\n", vertice_search->id);
+
+    Aresta *aresta_search = buscar_aresta(grafo, 4, 6);
+    printf("Aresta de %d -> %d buscada\n", aresta_search->orig, aresta_search->dest);
+
     liberar_Grafo(grafo);
     printf("\n");
     return 0;
