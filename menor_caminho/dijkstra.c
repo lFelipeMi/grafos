@@ -3,7 +3,6 @@
 
 typedef struct aresta
 {
-    int orig;
     int dest;
     struct aresta *prox;
 }Aresta;
@@ -60,14 +59,87 @@ void inserir_vertice(Vertice **grafo, int id)
     printf("Erro ao alocar memoria para novo vertice.\n");
 }
 
-void imprimir_grafo(Vertice **grafo){
-    while(*grafo){
-        printf("Vertice: %d\n", (*grafo)->id);
-        grafo = &(*grafo)->prox;
+//0 - Existe // 1 - Nao existe
+int verificar_vertice (Vertice *grafo, int id)
+{
+    while(grafo)
+    {
+        if(grafo->id == id) return 0;
+
+        grafo = grafo->prox;
     }
+    return 1;
 }
 
-int main(){
+void inserir_aresta(Vertice **grafo, int id1, int id2)
+{
+    if(verificar_vertice(*grafo, id1) || verificar_vertice(*grafo, id2))
+    { 
+        printf("Um ou ambos vertices nao existem!\n");
+        return;
+    }
+
+    while((*grafo)->id != id1)
+        grafo = &(*grafo)->prox;
+
+    Aresta *nova = malloc(sizeof(Aresta));
+    if(nova)
+    {
+        (*nova).dest = id2;
+
+        Aresta **lista_adj = &(*grafo)->lista_adj;
+        while(*lista_adj && (*lista_adj)->dest < id2)
+            lista_adj = &(*lista_adj)->prox;
+
+        if (*lista_adj && (*lista_adj)->dest == id2) 
+        {
+            printf("Aresta %d -> %d ja existe!\n", id1, id2);
+            return;
+        }
+
+        nova->prox = *lista_adj;
+        *lista_adj = nova;
+
+        return;
+    }
+    printf("Falha ao alocar memoria!\n");
+}
+
+void imprimir_grafo(Vertice **grafo){
+    if(*grafo == NULL)
+    {
+        printf("Grafo nulo!");
+        return;
+    }
+    int vazio = -1;
+
+    while(*grafo)
+    {
+        printf("\nVertice: %d: ", (*grafo)->id);
+        Aresta *lista_adj = (*grafo)->lista_adj;
+        if (!lista_adj) 
+        {
+            printf("Nenhuma aresta.");
+        } 
+        else 
+        {
+            vazio = 0;
+            while (lista_adj) {
+                if (lista_adj->prox) {
+                    printf("%d -> ", lista_adj->dest);
+                } else {
+                    printf("%d", lista_adj->dest); 
+                }
+                lista_adj = lista_adj->prox;
+            }
+        }
+        grafo = &(*grafo)->prox;
+    }
+    if(vazio) printf("Grafo vazio!\n");
+}
+
+int main()
+{
     Vertice *grafo = NULL;
     inserir_vertice(&grafo, 6);
     inserir_vertice(&grafo, 21);
@@ -75,8 +147,17 @@ int main(){
     inserir_vertice(&grafo, 10);
     inserir_vertice(&grafo, 3);
     inserir_vertice(&grafo, 4);
+
+    inserir_aresta(&grafo, 6, 21);
+    inserir_aresta(&grafo, 21, 2);
+    inserir_aresta(&grafo, 2, 10);
+    inserir_aresta(&grafo, 2, 3);
+    inserir_aresta(&grafo, 3, 4);
+    inserir_aresta(&grafo, 4, 6);
+    inserir_aresta(&grafo, 21, 21);
+
     imprimir_grafo(&grafo);
     liberar_Grafo(grafo);
-
+    printf("\n");
     return 0;
 }
