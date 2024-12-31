@@ -5,6 +5,7 @@ typedef struct aresta
 {
     int orig;
     int dest;
+    int peso;
     struct aresta *prox;
 }Aresta;
 
@@ -122,6 +123,7 @@ void inserir_aresta(Vertice **grafo, int id1, int id2)
     {
         (*nova).orig = id1;
         (*nova).dest = id2;
+        (*nova).peso = 1;
 
         Aresta **lista_adj = &(*grafo)->lista_adj;
         while(*lista_adj && (*lista_adj)->dest < id2)
@@ -187,6 +189,13 @@ Aresta* buscar_aresta(Vertice *grafo, int orig, int dest)
     return NULL;
 }
 
+void adicionar_peso(Vertice *grafo, int orig, int dest, int peso)
+{
+    Aresta *aresta = buscar_aresta(grafo, orig, dest);
+    
+    if(aresta) aresta->peso = peso;
+}
+
 void imprimir_grafo(Vertice **grafo){
     if(*grafo == NULL)
     {
@@ -208,9 +217,9 @@ void imprimir_grafo(Vertice **grafo){
             vazio = 0;
             while (lista_adj) {
                 if (lista_adj->prox) {
-                    printf("%d -> ", lista_adj->dest);
+                    printf("%d(%d) -> ", lista_adj->dest, lista_adj->peso);
                 } else {
-                    printf("%d", lista_adj->dest); 
+                    printf("%d(%d)", lista_adj->dest, lista_adj->peso); 
                 }
                 lista_adj = lista_adj->prox;
             }
@@ -237,6 +246,8 @@ int main()
     inserir_aresta(&grafo, 3, 4);
     inserir_aresta(&grafo, 4, 6);
     inserir_aresta(&grafo, 21, 21);
+
+    adicionar_peso(grafo, 6, 21, 5);
 
     imprimir_grafo(&grafo);
     ///////////////////////////////////////////////////
