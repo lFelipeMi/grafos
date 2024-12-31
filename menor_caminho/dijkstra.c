@@ -41,8 +41,8 @@ void inserir_vertice(Vertice **grafo, int id)
     if(novo)
     {
         novo->id = id;
-        novo->visitado = 0;
         novo->lista_adj = NULL;
+        novo->visitado = 0;
         novo->prox = NULL;
 
         while(*grafo && (*grafo)->id < id)
@@ -230,6 +230,60 @@ void adicionar_peso(Vertice *grafo, int orig, int dest, int peso)
     if(aresta) aresta->peso = peso;
 }
 
+void dfs(Vertice *grafo, int id_inicio, int id_fim, int *caminho,  int nivel)
+{
+    if(buscar_vertice(grafo, id_inicio) == NULL)
+    {
+        printf("Vertice %d nao encontrado!\n", id_inicio);
+        return;
+    }
+    Vertice *inicio = buscar_vertice(grafo, id_inicio);
+    caminho[nivel] = id_inicio;
+    inicio->visitado = 1;
+
+    if(id_inicio == id_fim)
+    {
+        for(int i = 0; i <= nivel; i++)
+        {
+            printf("%d ", caminho[i]);
+            if(i < nivel) printf("-> ");
+        }
+        printf("\n");
+    } 
+    else
+    {
+        Aresta *lista_adj = inicio->lista_adj;
+
+        while(lista_adj)
+        {
+            Vertice *dest = buscar_vertice(grafo, lista_adj->dest);
+
+            if(!dest->visitado)
+                dfs(grafo, lista_adj->dest, id_fim, caminho, nivel + 1);
+
+            lista_adj = lista_adj->prox;
+        }
+    }
+
+    inicio->visitado = 0;
+}
+
+void imprimir_caminhos(Vertice *grafo, int id_inicio, int id_fim)
+{
+    int *caminho = malloc(contar_vertice(grafo) * sizeof(int));
+
+    if(!caminho)
+    {
+        printf("Falha ao alocar memoria!\n");
+        return;
+    }
+
+    printf("Caminhos de %d para %d:\n", id_inicio, id_fim);
+    dfs(grafo, id_inicio, id_fim, caminho, 0);
+
+    free(caminho);
+}
+
 void imprimir_grafo(Vertice **grafo){
     if(*grafo == NULL)
     {
@@ -274,12 +328,15 @@ int main()
     inserir_vertice(&grafo, 4);
 
     inserir_aresta(&grafo, 6, 21);
-    inserir_aresta(&grafo, 21, 2);
+    inserir_aresta(&grafo, 6, 2);
+    inserir_aresta(&grafo, 21, 10);
     inserir_aresta(&grafo, 2, 10);
-    inserir_aresta(&grafo, 2, 3);
+    inserir_aresta(&grafo, 10, 3);
     inserir_aresta(&grafo, 3, 4);
+    inserir_aresta(&grafo, 2, 4);
     inserir_aresta(&grafo, 4, 6);
-    inserir_aresta(&grafo, 21, 21);
+
+    imprimir_caminhos(grafo, 6, 4);
 
     adicionar_peso(grafo, 6, 21, 5);
 
