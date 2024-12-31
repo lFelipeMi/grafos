@@ -230,42 +230,54 @@ void adicionar_peso(Vertice *grafo, int orig, int dest, int peso)
     if(aresta) aresta->peso = peso;
 }
 
-void dfs(Vertice *grafo, int id_inicio, int id_fim, int *caminho,  int nivel)
+int dfs(Vertice *grafo, int id_inicio, int id_fim, int *caminho,  int nivel)
 {
+    int menor_caminho = contar_vertice(grafo);
+    int compara = 0;
+
     if(buscar_vertice(grafo, id_inicio) == NULL)
     {
         printf("Vertice %d nao encontrado!\n", id_inicio);
-        return;
     }
-    Vertice *inicio = buscar_vertice(grafo, id_inicio);
-    caminho[nivel] = id_inicio;
-    inicio->visitado = 1;
-
-    if(id_inicio == id_fim)
-    {
-        for(int i = 0; i <= nivel; i++)
-        {
-            printf("%d ", caminho[i]);
-            if(i < nivel) printf("-> ");
-        }
-        printf("\n");
-    } 
     else
     {
-        Aresta *lista_adj = inicio->lista_adj;
+        Vertice *inicio = buscar_vertice(grafo, id_inicio);
+        caminho[nivel] = id_inicio;
+        inicio->visitado = 1;
 
-        while(lista_adj)
+        if(id_inicio == id_fim)
         {
-            Vertice *dest = buscar_vertice(grafo, lista_adj->dest);
+            for(int i = 0; i <= nivel; i++)
+            {
+                printf("%d ", caminho[i]);
+                if(i < nivel) printf("-> ");
+            }
+            printf("\n");
+            
+            inicio->visitado = 0;
+            return nivel + 1;
+        } 
+        else
+        {
+            Aresta *lista_adj = inicio->lista_adj;
 
-            if(!dest->visitado)
-                dfs(grafo, lista_adj->dest, id_fim, caminho, nivel + 1);
+            while(lista_adj)
+            {
+                Vertice *dest = buscar_vertice(grafo, lista_adj->dest);
 
-            lista_adj = lista_adj->prox;
+                if(!dest->visitado)
+                {
+                    compara = dfs(grafo, lista_adj->dest, id_fim, caminho, nivel + 1);
+                    if(menor_caminho > compara) menor_caminho = compara;
+                }
+
+                lista_adj = lista_adj->prox;
+            }
         }
-    }
 
-    inicio->visitado = 0;
+        inicio->visitado = 0;
+        return menor_caminho;
+    }
 }
 
 void imprimir_caminhos(Vertice *grafo, int id_inicio, int id_fim)
@@ -279,7 +291,8 @@ void imprimir_caminhos(Vertice *grafo, int id_inicio, int id_fim)
     }
 
     printf("Caminhos de %d para %d:\n", id_inicio, id_fim);
-    dfs(grafo, id_inicio, id_fim, caminho, 0);
+    printf("Menor Caminho: %d", dfs(grafo, id_inicio, id_fim, caminho, 0));
+
 
     free(caminho);
 }
@@ -314,7 +327,8 @@ void imprimir_grafo(Vertice **grafo){
         }
         grafo = &(*grafo)->prox;
     }
-    if(vazio) printf("Grafo vazio!\n");
+    if(vazio) printf("Grafo vazio!");
+    printf("\n");
 }
 
 int main()
