@@ -12,6 +12,7 @@ typedef struct aresta
 typedef struct vertice
 {
     int id;
+    int visitado;
     Aresta *lista_adj;
     struct vertice *prox;
 }Vertice;
@@ -40,6 +41,7 @@ void inserir_vertice(Vertice **grafo, int id)
     if(novo)
     {
         novo->id = id;
+        novo->visitado = 0;
         novo->lista_adj = NULL;
         novo->prox = NULL;
 
@@ -93,6 +95,17 @@ Vertice* buscar_vertice(Vertice *grafo, int id)
 
     printf("Vertice nao encontrado!\n");
     return NULL;
+}
+
+int contar_vertice(Vertice *grafo)
+{
+    int quant =  0;
+    while(grafo)
+    {
+        quant++;
+        grafo = grafo->prox;
+    }
+    return quant;
 }
 
 //0 - Existe // 1 - Nao existe
@@ -187,6 +200,27 @@ Aresta* buscar_aresta(Vertice *grafo, int orig, int dest)
 
     printf("Aresta de %d para %d nao encontrada.\n", orig, dest);
     return NULL;
+}
+
+int buscar_conexao(Vertice *grafo, int id1, int id2)
+{
+    return (buscar_aresta(grafo, id1, id2) || buscar_aresta(grafo, id2, id1));
+}
+
+int contar_arestas(Vertice *grafo)
+{
+    int quant = 0;
+    while(grafo)
+    {
+        Aresta *lista_adj = grafo->lista_adj;
+        while(lista_adj)
+        {
+            quant++;
+            lista_adj = lista_adj->prox;
+        }
+        grafo = grafo->prox;
+    }
+    return quant;
 }
 
 void adicionar_peso(Vertice *grafo, int orig, int dest, int peso)
