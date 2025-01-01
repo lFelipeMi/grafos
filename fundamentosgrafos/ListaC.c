@@ -15,6 +15,17 @@ typedef struct
     int tam;
 }Caminho;
 
+void liberar(Caminho *caminho) {
+    No *aux = caminho->inicio;
+    while (aux) {
+        No *remover = aux;
+        aux = aux->prox;
+        free(remover);
+    }
+    caminho->inicio = NULL;
+    caminho->tam = 0;
+}
+
 void iniciar_caminho(Caminho *caminho)
 {
     caminho->inicio = NULL;
@@ -179,7 +190,7 @@ int main()
     inserir_ordenado(&caminho, 4, 40);
     inserir_ordenado(&caminho, 2, 20);
 
-    printf("Lista inicial:\n");
+    printf("caminho inicial:\n");
     imprimir(caminho);
 
     printf("\nRemovendo o vértice 1:\n");
@@ -198,5 +209,6 @@ int main()
     remover(&caminho, 10);
     imprimir(caminho);
 
+    liberar(&caminho);
     return 0;
 }

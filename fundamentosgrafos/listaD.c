@@ -9,6 +9,14 @@ typedef struct no
     struct no *ant;
 }No;
 
+void liberar(No *caminho) {
+    while (caminho) {
+        No *remover = caminho;
+        caminho = caminho->prox;
+        free(remover);
+    }
+}
+
 void inserir_inicio(No **caminho, int id, int peso)
 {
     No *novo = malloc(sizeof(No));
