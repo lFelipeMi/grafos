@@ -1,30 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "listaC.h"
 
-typedef struct no
+void liberar(Caminho *caminho) 
 {
-    int id;
-    int peso;
-    struct no *prox;
-}No;
+    if (caminho->inicio) 
+    {
+        No *aux = caminho->inicio;
 
-typedef struct
-{
-    No *inicio;
-    No *fim;
-    int tam;
-}Caminho;
+        do 
+        {
+            No *remover = aux;
+            aux = aux->prox;
+            free(remover);
+        } while (aux != caminho->inicio); 
 
-void liberar(Caminho *caminho) {
-    No *aux = caminho->inicio;
-    while (aux) {
-        No *remover = aux;
-        aux = aux->prox;
-        free(remover);
+        caminho->inicio = NULL;
+        caminho->fim = NULL;
+        caminho->tam = 0;
     }
-    caminho->inicio = NULL;
-    caminho->tam = 0;
 }
+
 
 void iniciar_caminho(Caminho *caminho)
 {
@@ -162,6 +158,22 @@ void remover(Caminho *caminho, int id)
     else printf("O caminho esta vazio!\n");
 }
 
+No* buscar(Caminho *caminho, int id){
+    No *no = NULL;
+    No *aux = caminho->inicio;
+    
+    if(aux){
+        do{
+            if(aux->id == id)
+                return aux;
+            aux = aux->prox;
+        }while(aux != caminho->inicio);
+        printf("Valor nao encontrado!\n");
+    } else
+        printf("O caminho esta vazio!\n");
+    return NULL;
+}
+
 void imprimir(Caminho caminho)
 {
     No *no = caminho.inicio;
@@ -177,38 +189,4 @@ void imprimir(Caminho caminho)
     }
     else printf("Erro ao alocar memoria!");
     printf("\n");
-}
-
-int main()
-{
-    Caminho caminho;
-    iniciar_caminho(&caminho);
-
-    inserir_ordenado(&caminho, 3, 30);
-    inserir_ordenado(&caminho, 1, 10);
-    inserir_ordenado(&caminho, 5, 50);
-    inserir_ordenado(&caminho, 4, 40);
-    inserir_ordenado(&caminho, 2, 20);
-
-    printf("caminho inicial:\n");
-    imprimir(caminho);
-
-    printf("\nRemovendo o vértice 1:\n");
-    remover(&caminho, 1);
-    imprimir(caminho);
-
-    printf("\nRemovendo o vértice 5:\n");
-    remover(&caminho, 5);
-    imprimir(caminho);
-
-    printf("\nRemovendo o vértice 3:\n");
-    remover(&caminho, 3);
-    imprimir(caminho);
-
-    printf("\nTentando remover o vértice 10 (não existe):\n");
-    remover(&caminho, 10);
-    imprimir(caminho);
-
-    liberar(&caminho);
-    return 0;
 }
