@@ -13,13 +13,13 @@ typedef struct {
     int tam;
 } Caminho;
 
-void liberar(Caminho *caminho);
+void liberar_caminho(Caminho *caminho);
 void iniciar_caminho(Caminho *caminho);
 void inserir_inicio(Caminho *caminho, int id, int peso);
 void inserir_fim(Caminho *caminho, int id, int peso);
 void inserir_ordenado(Caminho *caminho, int id, int peso);
 void remover(Caminho *caminho, int id);
 No* buscar(Caminho *caminho, int id);
-void imprimir(Caminho caminho);
+void imprimir_caminho(Caminho *caminho);
 
 #endif

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "listaC.h"
 
-void liberar(Caminho *caminho) 
+void liberar_caminho(Caminho *caminho) 
 {
     if (caminho->inicio) 
     {
@@ -22,11 +22,17 @@ void liberar(Caminho *caminho)
 }
 
 
-void iniciar_caminho(Caminho *caminho)
+Caminho *iniciar_caminho()
 {
+    Caminho *caminho = malloc(sizeof(Caminho));
+    if (!caminho) {
+        printf("Erro ao alocar memoria!\n");
+        return NULL;
+    }
     caminho->inicio = NULL;
     caminho->fim = NULL;
     caminho->tam = 0;
+    return caminho;
 }
 
 void inserir_inicio(Caminho *caminho, int id, int peso)
@@ -174,17 +180,17 @@ No* buscar(Caminho *caminho, int id){
     return NULL;
 }
 
-void imprimir(Caminho caminho)
+void imprimir_caminho(Caminho *caminho)
 {
-    No *no = caminho.inicio;
+    No *no = caminho->inicio;
     if(no)
     {
         do
         {
             printf("%d(%d)", no->id, no->peso);
             no = no->prox;
-            if(no != caminho.inicio) printf(" -> ");
-        } while (no != caminho.inicio);
+            if(no != caminho->inicio) printf(" -> ");
+        } while (no != caminho->inicio);
         
     }
     else printf("Erro ao alocar memoria!");
