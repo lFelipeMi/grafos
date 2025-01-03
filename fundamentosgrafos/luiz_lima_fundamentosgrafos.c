@@ -112,8 +112,30 @@ int calcular_grau(Vertice *grafo, int id)
 }
 
 //Criar uma funcao que calcule grau minino e max. Imprimir repeticoes com o indentificador do vertice.
-int calcular_grau_extremos();
+void calcular_grau_extremos(Vertice *grafo)
+{
+    int maior = -1, maior_id = 0;
+    int menor = -1, menor_id = 0;
+    int aux = 0;
 
+    while(grafo)
+    {
+        aux = calcular_grau(grafo, grafo->id);
+        if(menor > aux && menor != -1)
+        {
+            menor = aux;
+            menor_id = grafo->id;
+        }
+        if(maior < aux)
+        {
+            maior = aux;
+            maior_id = grafo->id;
+        }
+        grafo = grafo->prox; 
+    }
+    printf("Maior: %d grau %d\n", maior_id, maior);
+    printf("Menor: %d grau %d\n", menor_id, menor);
+}
 //ordem do grafo
 int calcular_ordem();
 
