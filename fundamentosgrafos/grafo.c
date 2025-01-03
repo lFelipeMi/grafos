@@ -2,25 +2,6 @@
 #include <stdlib.h>
 #include "grafo.h"
 
-typedef struct aresta
-{
-    int orig;
-    int dest;
-    int percorrida;
-    struct aresta *prox;
-    struct aresta *ant;
-}Aresta;
-
-typedef struct vertice
-{
-    int id;
-    int grau_entrada;
-    int grau_saida;
-    int visitado;
-    Aresta *lista_adj;
-    struct vertice *prox;
-}Vertice;
-
 void liberar_grafo(Vertice *grafo)
 {
     while(grafo != NULL)
@@ -195,7 +176,7 @@ Aresta *buscar_aresta(Vertice **grafo, int orig, int dest)
     if(!(*grafo && (*grafo)->lista_adj))
     {
         printf("Aresta nao encontrada!\n");
-        return;
+        return NULL;
     }
 
     if((*grafo)->lista_adj->dest == dest) return (*grafo)->lista_adj;
@@ -250,6 +231,6 @@ void imprimir_grafo(Vertice *grafo)
         }
         grafo = grafo->prox;
     }while(grafo);
-    printf("Numero de vertices: %d\n", vertices);
+    printf("\nNumero de vertices: %d\n", vertices);
     printf("Numero de arestas: %d\n", arestas);
 }
