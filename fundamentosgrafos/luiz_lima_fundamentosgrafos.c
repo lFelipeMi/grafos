@@ -77,7 +77,15 @@ int verificar_conexo(Vertice *grafo)
     return 1;
 }
 
-int verificar_lacos();
+int verificar_lacos(Vertice *grafo)
+{
+    while(grafo)
+    {
+        if(buscar_aresta(&grafo, grafo->id, grafo->id)) return 1;
+        grafo = grafo->prox;
+    }
+    return 0;
+}
 
 int verificar_paralelas();
 
