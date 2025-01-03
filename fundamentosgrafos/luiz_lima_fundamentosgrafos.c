@@ -89,7 +89,27 @@ int verificar_lacos(Vertice *grafo)
 
 int verificar_paralelas();
 
-void calcular_grau();
+int calcular_grau(Vertice *grafo, int id)
+{
+    while(grafo && grafo->id != id)
+        grafo = grafo->prox;
+
+    if(!grafo)
+    {
+        printf("Vertice nao encontrado!\n");
+        return -1;
+    }
+
+    Aresta *lista_adj = grafo->lista_adj;
+    int grau = 0;
+    while(lista_adj)
+    {
+        grau++;
+        lista_adj = lista_adj->prox;
+    }
+    
+    return grau;
+}
 
 //Criar uma funcao que calcule grau minino e max. Imprimir repeticoes com o indentificador do vertice.
 int calcular_grau_extremos();
