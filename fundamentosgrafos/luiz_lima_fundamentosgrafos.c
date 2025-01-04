@@ -6,54 +6,60 @@
 #include "grafo.h"
 #include "listaC.h"
 
-int dfs(Vertice *grafo, int id_inicio, int id_fim, Caminho *caminho, int nivel)
+#define CAMINHO 0
+#define CICLO 1
+#define TRILHA 2
+#define CIRCUITO 3
+
+int dfs(Vertice *grafo, int id_atual, int id_destino, Caminho *caminho_atual, int objetivo) 
 {
-    if(id_inicio == id_fim && nivel == 0) return 0;
-    int menor_caminho = 0;
-    int compara = 0;
+    Vertice *atual = buscar_vertice(grafo, id_atual); 
+    if (!atual) return -1;
 
-    if(buscar_vertice(grafo, id_inicio) == NULL)
+    int encontrado = 0;
+
+    atual->visitado = 1; 
+    inserir_fim(caminho_atual, id_atual, 0); 
+
+    if ((objetivo == CAMINHO || objetivo == TRILHA) && id_atual == id_destino) 
     {
-        printf("Vertice %d nao encontrado!\n", id_inicio);
-    }
-    else
+        imprimir_caminho(caminho_atual); 
+        encontrado = 1;
+    } 
+    else if ((objetivo == CICLO || objetivo == CIRCUITO) && id_atual == id_destino && caminho_atual->tam > 2) 
     {
-        Vertice *inicio = buscar_vertice(grafo, id_inicio);
-        inserir_fim(caminho, id_inicio, 0);
-        inicio->visitado += 1;
+        imprimir_caminho(caminho_atual); 
+        encontrado = 1;
+    } 
+    else 
+    {
+        Aresta *lista_adj = atual->lista_adj;
 
-        if(id_inicio == id_fim)
+        while (lista_adj) 
         {
-            imprimir_caminho(caminho);
-            
-            inicio->visitado = 0;
-            return nivel + 1;
-        } 
-        else
-        {
-            Aresta *lista_adj = inicio->lista_adj;
+            Vertice *dest = buscar_vertice(grafo, lista_adj->dest);
 
-            while(lista_adj)
+            if (!dest) break;
+
+            if ((objetivo == TRILHA || objetivo == CAMINHO) && !lista_adj->percorrida)
             {
-                Vertice *dest = buscar_vertice(grafo, lista_adj->dest);
-
-                if(!(dest->visitado % 2))
-                {
-                    compara = dfs(grafo, lista_adj->dest, id_fim, caminho, nivel + 1);
-                    if(menor_caminho > compara || menor_caminho == 0) menor_caminho = compara;
-                    while(caminho->fim->id != id_inicio) remover_caminho(caminho, caminho->fim->id);
-                }
-
-                lista_adj = lista_adj->prox;
+                lista_adj->percorrida = 1;
+                encontrado = dfs(grafo, lista_adj->dest, id_destino, caminho_atual, objetivo);
+                lista_adj->percorrida = 0;
+            } 
+            else if ((objetivo == CIRCUITO || objetivo == CICLO) && !dest->visitado)
+            {
+                encontrado = dfs(grafo, lista_adj->dest, id_destino, caminho_atual, objetivo);
             }
+            lista_adj = lista_adj->prox;
         }
-
-        if(caminho->fim) remover_caminho(caminho, caminho->fim->id);
-        inicio->visitado += 1;
-        return menor_caminho;
     }
-}
 
+    remover_caminho(caminho_atual, id_atual);
+    atual->visitado = 0;
+
+    return encontrado;
+}
 
 /////////////////////////////////////////////////////////////
 /*Funcoes propostas*/
@@ -66,7 +72,7 @@ int verificar_conexo(Vertice *grafo)
 
     while(aux)
     {
-        if(!dfs(grafo, id1, aux->id, caminho, 0))
+        if(!dfs(grafo, id1, aux->id, caminho, CAMINHO))
         {
             printf("O grafo nao eh conexo!\n");
             return 0;
@@ -261,13 +267,40 @@ int verificar_regular(Vertice *grafo)
 
 int imprimir_passeios();
 
-int imprimir_trilhas();
+int imprimir_trilhas(Vertice *grafo)
+{
+    Caminho *trilha = iniciar_caminho();
+    Vertice *ref_inicio = grafo;
 
-int imprimir_circuitos();
+    while(grafo)
+    {
+        Vertice *aux = grafo->prox;
+        while(aux)
+        {
+            printf("Trilhas de %d a %d:\n", grafo->id, aux->id);
+            dfs(ref_inicio, grafo->id, aux->id, trilha, TRILHA);
+            aux = aux->prox;
+        }
+        grafo = grafo->prox;
+    }
+}
+
+int imprimir_circuitos(Vertice *grafo)
+{
+    Caminho *circuito = iniciar_caminho();
+    Vertice *ref_inicio = grafo;
+    while(grafo)
+    {
+        printf("Circuitos de %d:\n", grafo->id);
+        dfs(ref_inicio, grafo->id, grafo->id, circuito, CIRCUITO);
+        grafo = grafo->prox;
+    }
+}
 
 void imprimir_caminhos(Vertice *grafo)
 {
     Caminho *caminho = iniciar_caminho();
+    Vertice *ref_inicio = grafo;
     while(grafo)
     {
         Vertice *aux = grafo->prox;
@@ -276,8 +309,7 @@ void imprimir_caminhos(Vertice *grafo)
             printf("Caminhos de %d a %d:\n", grafo->id, aux->id);
             if(grafo->id != aux->id)
             {
-                dfs(grafo, grafo->id, aux->id, caminho, 0);
-                liberar_caminho(caminho);
+                dfs(ref_inicio, grafo->id, aux->id, caminho, CAMINHO);
             }
             aux = aux->prox;
         }
@@ -285,7 +317,17 @@ void imprimir_caminhos(Vertice *grafo)
     }
 }
 
-int imprimir_ciclos();
+int imprimir_ciclos(Vertice *grafo)
+{
+    Caminho *ciclo = iniciar_caminho();
+    Vertice *ref_inicio = grafo;
+    while(grafo)
+    {
+        printf("Ciclos de %d:\n", grafo->id);
+        dfs(ref_inicio, grafo->id, grafo->id, ciclo, CICLO);
+        grafo = grafo->prox;
+    }
+}
 
 int main()
 {
@@ -297,12 +339,85 @@ int main()
     inserir_vertice(&grafo, 4);
 
     inserir_aresta(&grafo, 1, 2);
-    inserir_aresta(&grafo, 1, 3);
-    inserir_aresta(&grafo, 2, 4);
+    inserir_aresta(&grafo, 2, 1);
+    inserir_aresta(&grafo, 2, 3);
+    inserir_aresta(&grafo, 3, 2);
     inserir_aresta(&grafo, 3, 4);
+    inserir_aresta(&grafo, 4, 3);
+    inserir_aresta(&grafo, 4, 1);
+    inserir_aresta(&grafo, 1, 4); 
+    inserir_aresta(&grafo, 1, 3);
+    inserir_aresta(&grafo, 3, 1); 
+    inserir_aresta(&grafo, 2, 2); 
+    inserir_aresta(&grafo, 3, 2);
+    inserir_aresta(&grafo, 2, 3);
 
-    
-    imprimir_caminhos(grafo);
     imprimir_grafo(grafo);
+    printf("### Testando Propriedades do Grafo ###\n\n");
+
+    printf("\nConexidade do grafo:\n");
+    if (verificar_conexo(grafo))
+        printf("O grafo é conexo.\n");
+    else
+        printf("O grafo não é conexo.\n");
+
+    printf("\nVerificando laços:\n");
+    if (verificar_lacos(grafo))
+        printf("O grafo possui laços.\n");
+    else
+        printf("O grafo não possui laços.\n");
+
+    printf("\nVerificando arestas paralelas:\n");
+    if (verificar_paralelas(grafo))
+        printf("O grafo possui arestas paralelas.\n");
+    else
+        printf("O grafo não possui arestas paralelas.\n");
+
+    printf("\nGraus dos vértices:\n");
+    for (int i = 1; i <= 4; i++)
+        printf("Grau do vértice %d: %d\n", i, calcular_grau(grafo, i));
+
+    printf("\nGrau mínimo e máximo:\n");
+    calcular_grau_extremos(grafo);
+
+    printf("\nVerificando simplicidade do grafo:\n");
+    if (verificar_simples(grafo))
+        printf("O grafo é simples.\n");
+    else
+        printf("O grafo não é simples.\n");
+
+    printf("\nVerificando se é multigrafo:\n");
+    if (verificar_multigrafo(grafo))
+        printf("O grafo é um multigrafo.\n");
+    else
+        printf("O grafo não é um multigrafo.\n");
+
+    printf("\nVerificando completude do grafo:\n");
+    if (verificar_completo(grafo))
+        printf("O grafo é completo.\n");
+    else
+        printf("O grafo não é completo.\n");
+
+    printf("\nVerificando regularidade do grafo:\n");
+    if (verificar_regular(grafo))
+        printf("O grafo é regular.\n");
+    else
+        printf("O grafo não é regular.\n");
+
+    printf("\nTrilhas no grafo:\n");
+    imprimir_trilhas(grafo);
+
+    printf("\nCircuitos no grafo:\n");
+    imprimir_circuitos(grafo);
+
+    printf("\nCaminhos no grafo:\n");
+    imprimir_caminhos(grafo);
+
+    printf("\nCiclos no grafo:\n");
+    imprimir_ciclos(grafo);
+
+    imprimir_grafo(grafo);
+    liberar_grafo(grafo);
+
     return 0;
 }

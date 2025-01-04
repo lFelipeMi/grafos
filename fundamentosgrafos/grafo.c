@@ -70,7 +70,6 @@ Vertice *buscar_vertice(Vertice *grafo, int id)
         grafo = grafo->prox;
     }
 
-    printf("Vertice nao encontrado!\n");
     return NULL;
 }
 
@@ -173,11 +172,7 @@ Aresta *buscar_aresta(Vertice **grafo, int orig, int dest)
     while(*grafo && (*grafo)->id != orig)
         grafo = &(*grafo)->prox;
 
-    if(!(*grafo && (*grafo)->lista_adj))
-    {
-        printf("Aresta nao encontrada!\n");
-        return NULL;
-    }
+    if(!(*grafo && (*grafo)->lista_adj)) return NULL;
 
     if((*grafo)->lista_adj->dest == dest) return (*grafo)->lista_adj;
 
@@ -186,7 +181,6 @@ Aresta *buscar_aresta(Vertice **grafo, int orig, int dest)
     while((*lista_adj)->prox && (*lista_adj)->prox->dest != dest)
         lista_adj = &(*lista_adj)->prox;
 
-    if(!(*lista_adj)->prox) printf("Aresta nao encontrada!\n");
     return (*lista_adj)->prox;
 }
 

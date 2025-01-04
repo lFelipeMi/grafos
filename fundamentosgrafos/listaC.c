@@ -4,7 +4,7 @@
 
 void liberar_caminho(Caminho *caminho) 
 {
-    if (caminho->inicio) 
+    if (caminho && caminho->inicio) 
     {
         No *aux = caminho->inicio;
 
@@ -19,6 +19,7 @@ void liberar_caminho(Caminho *caminho)
         caminho->fim = NULL;
         caminho->tam = 0;
     }
+    if(caminho) free(caminho);
 }
 
 
