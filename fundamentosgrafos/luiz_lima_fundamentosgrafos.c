@@ -6,47 +6,52 @@
 #include "grafo.h"
 #include "listaC.h"
 
-int INT_MAX = 2147483647;
-
 int dfs(Vertice *grafo, int id_inicio, int id_fim, Caminho *caminho, int nivel)
 {
-    if (!grafo || buscar_vertice(grafo, id_inicio) == NULL)
+    if(id_inicio == id_fim && nivel == 0) return 0;
+    int menor_caminho = 0;
+    int compara = 0;
+
+    if(buscar_vertice(grafo, id_inicio) == NULL)
     {
         printf("Vertice %d nao encontrado!\n", id_inicio);
-        return INT_MAX;
     }
-
-    Vertice *inicio = buscar_vertice(grafo, id_inicio);
-    inserir_fim(caminho, id_inicio, 0);
-    inicio->visitado = 1;
-
-    if (id_inicio == id_fim)
+    else
     {
-        imprimir_caminho(caminho); 
+        Vertice *inicio = buscar_vertice(grafo, id_inicio);
+        inserir_fim(caminho, id_inicio, 0);
         inicio->visitado += 1;
-        return nivel;
-    }
 
-    int menor_caminho = INT_MAX;
-    Aresta *lista_adj = inicio->lista_adj;
-
-    while (lista_adj)
-    {
-        Vertice *dest = buscar_vertice(grafo, lista_adj->dest);
-
-        if (!(dest->visitado % 2))
+        if(id_inicio == id_fim)
         {
-            int compara = dfs(grafo, lista_adj->dest, id_fim, caminho, nivel + 1);
-            if (compara < menor_caminho) menor_caminho = compara;
+            imprimir_caminho(caminho);
+            
+            inicio->visitado = 0;
+            return nivel + 1;
+        } 
+        else
+        {
+            Aresta *lista_adj = inicio->lista_adj;
+
+            while(lista_adj)
+            {
+                Vertice *dest = buscar_vertice(grafo, lista_adj->dest);
+
+                if(!(dest->visitado % 2))
+                {
+                    compara = dfs(grafo, lista_adj->dest, id_fim, caminho, nivel + 1);
+                    if(menor_caminho > compara || menor_caminho == 0) menor_caminho = compara;
+                    while(caminho->fim->id != id_inicio) remover_caminho(caminho, caminho->fim->id);
+                }
+
+                lista_adj = lista_adj->prox;
+            }
         }
 
-        lista_adj = lista_adj->prox;
+        if(caminho->fim) remover_caminho(caminho, caminho->fim->id);
+        inicio->visitado += 1;
+        return menor_caminho;
     }
-
-    if (caminho->fim) remover_fim(caminho);
-
-    inicio->visitado += 1;
-    return menor_caminho == INT_MAX ? 0 : menor_caminho;
 }
 
 
@@ -269,7 +274,11 @@ void imprimir_caminhos(Vertice *grafo)
         while(aux)
         {
             printf("Caminhos de %d a %d:\n", grafo->id, aux->id);
-            if(grafo->id != aux->id) dfs(grafo, grafo->id, aux->id, caminho, 0);
+            if(grafo->id != aux->id)
+            {
+                dfs(grafo, grafo->id, aux->id, caminho, 0);
+                liberar_caminho(caminho);
+            }
             aux = aux->prox;
         }
         grafo = grafo->prox;

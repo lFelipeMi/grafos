@@ -18,8 +18,8 @@ Caminho* iniciar_caminho();
 void inserir_inicio(Caminho *caminho, int id, int peso);
 void inserir_fim(Caminho *caminho, int id, int peso);
 void inserir_ordenado(Caminho *caminho, int id, int peso);
-void remover(Caminho *caminho, int id);
-No* buscar(Caminho *caminho, int id);
+void remover_caminho(Caminho *caminho, int id);
+No* buscar_caminho(Caminho *caminho, int id);
 void imprimir_caminho(Caminho *caminho);
 
 #endif

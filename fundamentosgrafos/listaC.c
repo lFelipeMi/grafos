@@ -117,7 +117,7 @@ void inserir_ordenado(Caminho *caminho, int id, int peso)
     else printf("Erro ao alocar memoria!\n");
 }
 
-void remover(Caminho *caminho, int id)
+void remover_caminho(Caminho *caminho, int id)
 {
     No *remover = NULL;
     if(caminho && caminho->inicio)
@@ -164,7 +164,7 @@ void remover(Caminho *caminho, int id)
     else printf("O caminho esta vazio!\n");
 }
 
-No* buscar(Caminho *caminho, int id){
+No* buscar_caminho(Caminho *caminho, int id){
     No *no = NULL;
     No *aux = caminho->inicio;
     
