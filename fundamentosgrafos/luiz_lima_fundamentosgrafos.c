@@ -162,8 +162,12 @@ void calcular_grau_extremos(Vertice *grafo)
     printf("Maior: %d grau %d\n", maior_id, maior);
     printf("Menor: %d grau %d\n", menor_id, menor);
 }
-//ordem do grafo
-int calcular_ordem();
+
+int calcular_ordem(Vertice *grafo)
+{
+    if(!grafo) return 0;
+    return 1 + contar_vertice(grafo->prox);
+}
 
 int verificar_simples();
 
