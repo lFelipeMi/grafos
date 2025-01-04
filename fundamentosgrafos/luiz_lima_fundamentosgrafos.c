@@ -79,6 +79,12 @@ int verificar_conexo(Vertice *grafo)
 
 int verificar_lacos(Vertice *grafo)
 {
+    if(!grafo)
+    {
+        printf("Grafo vazio\n");
+        return -1;
+    }
+
     while(grafo)
     {
         if(buscar_aresta(&grafo, grafo->id, grafo->id)) return 1;
@@ -169,13 +175,88 @@ int calcular_ordem(Vertice *grafo)
     return 1 + contar_vertice(grafo->prox);
 }
 
-int verificar_simples();
+int verificar_simples(Vertice *grafo)
+{
+    int simples = 1;
+    if(verificar_lacos(grafo)) return 0;
 
-int verificar_multigrafo();
+    while(grafo)
+    {
+        Aresta *lista_adj = grafo->lista_adj;
+        while(lista_adj && lista_adj->prox)
+        {
+            if(lista_adj->dest == lista_adj->prox->dest) simples = 0;
+            lista_adj = lista_adj->prox;
+        }
+        grafo = grafo->prox;
+    }
 
-int verificar_completo();
+    return simples;
+}
 
-int verificar_regular();
+int verificar_multigrafo(Vertice *grafo)
+{
+    int multi = 0;
+    if(verificar_lacos(grafo)) return 1;
+
+    while(grafo)
+    {
+        Aresta *lista_adj = grafo->lista_adj;
+        while(lista_adj && lista_adj->prox)
+        {
+            if(lista_adj->dest == lista_adj->prox->dest) multi = 1;
+            lista_adj = lista_adj->prox;
+        }
+        grafo = grafo->prox;
+    }
+
+    return multi;
+}
+
+int verificar_completo(Vertice *grafo)
+{
+    if(!grafo)
+    {
+        printf("Grafo vazio!\n");
+        return -1;
+    }
+
+    Vertice *inicio = grafo;
+
+    while(grafo)
+    {
+        Vertice *grafo_aux = inicio;
+        while(grafo_aux)
+        {
+            if(grafo->id != grafo_aux->id)
+                if(!buscar_aresta(&inicio, grafo->id, grafo_aux->id)) return 0;
+            grafo_aux = grafo_aux->prox;
+        }
+        grafo = grafo->prox;
+    }
+    return 1;
+}
+
+int verificar_regular(Vertice *grafo)
+{
+    if(!grafo)
+    {
+        printf("Grafo vazio!\n");
+        return -1;
+    }
+
+    int grau_ref = calcular_grau(grafo, grafo->id);
+    grafo = grafo->prox;
+
+    while(grafo)
+    {
+        int grau_atual = calcular_grau(grafo, grafo->id);
+        if(grau_ref != grau_atual) return 0;
+        grafo = grafo->prox;
+    }
+
+    return 1;
+}
 
 int imprimir_passeios();
 
