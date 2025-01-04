@@ -6,51 +6,47 @@
 #include "grafo.h"
 #include "listaC.h"
 
+int INT_MAX = 2147483647;
+
 int dfs(Vertice *grafo, int id_inicio, int id_fim, Caminho *caminho, int nivel)
 {
-    if(id_inicio == id_fim && nivel == 0) return 0;
-    int menor_caminho = 0;
-    int compara = 0;
-
-    if(buscar_vertice(grafo, id_inicio) == NULL)
+    if (!grafo || buscar_vertice(grafo, id_inicio) == NULL)
     {
         printf("Vertice %d nao encontrado!\n", id_inicio);
+        return INT_MAX;
     }
-    else
+
+    Vertice *inicio = buscar_vertice(grafo, id_inicio);
+    inserir_fim(caminho, id_inicio, 0);
+    inicio->visitado = 1;
+
+    if (id_inicio == id_fim)
     {
-        Vertice *inicio = buscar_vertice(grafo, id_inicio);
-        inserir_fim(caminho, id_inicio, 0);
-        inicio->visitado = 1;
+        imprimir_caminho(caminho); 
+        inicio->visitado += 1;
+        return nivel;
+    }
 
-        if(id_inicio == id_fim)
+    int menor_caminho = INT_MAX;
+    Aresta *lista_adj = inicio->lista_adj;
+
+    while (lista_adj)
+    {
+        Vertice *dest = buscar_vertice(grafo, lista_adj->dest);
+
+        if (!(dest->visitado % 2))
         {
-            imprimir_caminho(caminho);
-            
-            inicio->visitado = 0;
-            return nivel + 1;
-        } 
-        else
-        {
-            Aresta *lista_adj = inicio->lista_adj;
-
-            while(lista_adj)
-            {
-                Vertice *dest = buscar_vertice(grafo, lista_adj->dest);
-
-                if(!dest->visitado)
-                {
-                    compara = dfs(grafo, lista_adj->dest, id_fim, caminho, nivel + 1);
-                    if(menor_caminho > compara || menor_caminho == 0) menor_caminho = compara;
-                }
-
-                lista_adj = lista_adj->prox;
-            }
+            int compara = dfs(grafo, lista_adj->dest, id_fim, caminho, nivel + 1);
+            if (compara < menor_caminho) menor_caminho = compara;
         }
 
-        if(caminho->inicio) liberar_caminho(caminho);
-        inicio->visitado = 0;
-        return menor_caminho;
+        lista_adj = lista_adj->prox;
     }
+
+    if (caminho->fim) remover_fim(caminho);
+
+    inicio->visitado += 1;
+    return menor_caminho == INT_MAX ? 0 : menor_caminho;
 }
 
 
@@ -264,7 +260,21 @@ int imprimir_trilhas();
 
 int imprimir_circuitos();
 
-int imprimir_caminhhos();
+void imprimir_caminhos(Vertice *grafo)
+{
+    Caminho *caminho = iniciar_caminho();
+    while(grafo)
+    {
+        Vertice *aux = grafo->prox;
+        while(aux)
+        {
+            printf("Caminhos de %d a %d:\n", grafo->id, aux->id);
+            if(grafo->id != aux->id) dfs(grafo, grafo->id, aux->id, caminho, 0);
+            aux = aux->prox;
+        }
+        grafo = grafo->prox;
+    }
+}
 
 int imprimir_ciclos();
 
@@ -275,14 +285,15 @@ int main()
     inserir_vertice(&grafo, 1);
     inserir_vertice(&grafo, 2);
     inserir_vertice(&grafo, 3);
+    inserir_vertice(&grafo, 4);
 
-    // Inserindo arestas
     inserir_aresta(&grafo, 1, 2);
-    inserir_aresta(&grafo, 2, 3);
+    inserir_aresta(&grafo, 1, 3);
+    inserir_aresta(&grafo, 2, 4);
+    inserir_aresta(&grafo, 3, 4);
 
-    // Teste de conectividade
-    int resultado = verificar_conexo(grafo);
+    
+    imprimir_caminhos(grafo);
     imprimir_grafo(grafo);
-    printf("Resultado esperado: Conexo. Obtido: %s\n", resultado ? "Conexo" : "Não Conexo");
     return 0;
 }
