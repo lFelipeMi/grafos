@@ -87,7 +87,33 @@ int verificar_lacos(Vertice *grafo)
     return 0;
 }
 
-int verificar_paralelas();
+int verificar_paralelas(Vertice *grafo)
+{
+    int paralela = 0;
+
+    if(!grafo)
+    {
+        printf("Grafo vazio\n");
+        return -1;
+    }
+
+    while(grafo)
+    {
+        Aresta *lista_adj = grafo->lista_adj;
+        while(lista_adj && lista_adj->prox)
+        {
+            if(lista_adj->dest == lista_adj->prox->dest)
+            {
+                printf("Aresta %d -> %d eh paralela\n",lista_adj->orig, lista_adj->dest);
+                paralela = 1;
+            }
+            lista_adj = lista_adj->prox;
+        }
+        grafo = grafo->prox;
+    }
+
+    return paralela;
+}
 
 int calcular_grau(Vertice *grafo, int id)
 {
