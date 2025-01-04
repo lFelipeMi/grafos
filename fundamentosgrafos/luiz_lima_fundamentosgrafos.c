@@ -339,18 +339,12 @@ int main()
     inserir_vertice(&grafo, 4);
 
     inserir_aresta(&grafo, 1, 2);
-    inserir_aresta(&grafo, 2, 1);
     inserir_aresta(&grafo, 2, 3);
-    inserir_aresta(&grafo, 3, 2);
     inserir_aresta(&grafo, 3, 4);
-    inserir_aresta(&grafo, 4, 3);
-    inserir_aresta(&grafo, 4, 1);
-    inserir_aresta(&grafo, 1, 4); 
-    inserir_aresta(&grafo, 1, 3);
-    inserir_aresta(&grafo, 3, 1); 
+    inserir_aresta(&grafo, 4, 1); 
+    inserir_aresta(&grafo, 1, 3); 
     inserir_aresta(&grafo, 2, 2); 
     inserir_aresta(&grafo, 3, 2);
-    inserir_aresta(&grafo, 2, 3);
 
     imprimir_grafo(grafo);
     printf("### Testando Propriedades do Grafo ###\n\n");

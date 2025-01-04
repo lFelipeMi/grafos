@@ -81,55 +81,63 @@ int contar_vertice(Vertice *grafo)
 
 void inserir_aresta(Vertice **grafo, int orig, int dest)
 {
-    Aresta *nova = malloc(sizeof(Aresta));
-    if(!nova)
+    if (!grafo || !(*grafo)) 
     {
-        printf("Erro ao alocar memoria!\n");
+        printf("Grafo vazio!\n");
+        return;
+    }
+
+    Vertice *vertice_origem = buscar_vertice(*grafo, orig);
+    if (!vertice_origem) 
+    {
+        printf("Vertice de origem (%d) nao encontrado!\n", orig);
+        return;
+    }
+
+    Vertice *vertice_destino = buscar_vertice(*grafo, dest);
+    if (!vertice_destino) 
+    {
+        printf("Vertice de destino (%d) nao encontrado!\n", dest);
+        return;
+    }
+
+    Aresta *nova = malloc(sizeof(Aresta));
+    if (!nova) 
+    {
+        printf("Erro ao alocar memoria\n");
         return;
     }
 
     nova->orig = orig;
     nova->dest = dest;
+    nova->prox = NULL;
+    nova->ant = NULL;
 
-    while(*grafo && (*grafo)->id != orig)
-        grafo = &(*grafo)->prox;
+    Aresta **lista_adj = &vertice_origem->lista_adj;
 
-    if(!(*grafo)) 
-    {
-        printf("Vertice de origem nao encontrado!\n");
-        free(nova);
-        return;
-    }
-    if(!buscar_vertice(*grafo, dest))
-    {
-        printf("Vertice de destino nao encontrado!\n");
-        free(nova);
-        return;
-    }
-
-    Aresta **lista_adj = &(*grafo)->lista_adj;
-    if(!(*lista_adj))
-    {
-        nova->prox = NULL;
-        nova->ant = NULL;
+    if (!(*lista_adj)) 
         *lista_adj = nova;
-    }
-    else if((*lista_adj)->dest > dest)
+    else if ((*lista_adj)->dest > dest) 
     {
         nova->prox = *lista_adj;
-        nova->ant = NULL;
+        (*lista_adj)->ant = nova;
         *lista_adj = nova;
-    }
-    else
+    } 
+    else 
     {
-        while((*lista_adj)->prox && (*lista_adj)->prox->dest < dest)
-            lista_adj = &(*lista_adj)->prox;
-        nova->prox = (*lista_adj)->prox;
-        if(nova->prox) nova->prox->ant = nova;
-        nova->ant = *lista_adj;
-        (*lista_adj)->prox = nova;
+        Aresta *atual = *lista_adj;
+        while (atual->prox && atual->prox->dest < dest)
+            atual = atual->prox;
+
+        nova->prox = atual->prox;
+        if (atual->prox) 
+            atual->prox->ant = nova;
+
+        atual->prox = nova;
+        nova->ant = atual;
     }
 }
+
 
 void remover_aresta(Vertice **grafo, int orig, int dest)
 {
