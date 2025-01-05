@@ -160,7 +160,7 @@ void calcular_grau_extremos(Vertice *grafo)
     while(grafo)
     {
         aux = calcular_grau(grafo, grafo->id);
-        if(menor > aux && menor != -1)
+        if(menor > aux || menor == -1)
         {
             menor = aux;
             menor_id = grafo->id;
@@ -373,7 +373,7 @@ int main()
 
     printf("\nGrau mínimo e máximo:\n");
     calcular_grau_extremos(grafo);
-
+/*
     printf("\nVerificando simplicidade do grafo:\n");
     if (verificar_simples(grafo))
         printf("O grafo é simples.\n");
@@ -409,7 +409,7 @@ int main()
 
     printf("\nCiclos no grafo:\n");
     imprimir_ciclos(grafo);
-
+*/
     imprimir_grafo(grafo);
     liberar_grafo(grafo);
 
