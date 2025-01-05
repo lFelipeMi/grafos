@@ -41,13 +41,13 @@ int dfs(Vertice *grafo, int id_atual, int id_destino, Caminho *caminho_atual, in
 
             if (!dest) break;
 
-            if ((objetivo == TRILHA || objetivo == CAMINHO) && !lista_adj->percorrida)
+            if ((objetivo == CICLO || objetivo == CAMINHO) && !lista_adj->percorrida)
             {
                 lista_adj->percorrida = 1;
                 encontrado = dfs(grafo, lista_adj->dest, id_destino, caminho_atual, objetivo);
                 lista_adj->percorrida = 0;
             } 
-            else if ((objetivo == CIRCUITO || objetivo == CICLO) && !dest->visitado)
+            else if ((objetivo == CIRCUITO || objetivo == TRILHA) && !dest->visitado)
             {
                 encontrado = dfs(grafo, lista_adj->dest, id_destino, caminho_atual, objetivo);
             }
