@@ -162,7 +162,35 @@ void remover_caminho(Caminho *caminho, int id)
         free(remover);
         caminho->tam--;
     }
-    else printf("O caminho esta vazio!\n");
+    ///else printf("O caminho esta vazio!\n");
+}
+
+void remover_fim(Caminho *caminho)
+{
+    if (caminho && caminho->inicio)
+    {
+        No *aux = caminho->inicio;
+        No *remover = NULL;
+
+        if (aux->prox == caminho->inicio)
+        {
+            free(aux);
+            caminho->inicio = NULL;
+            caminho->fim = NULL;
+        }
+        else
+        {
+
+            while (aux->prox != caminho->fim)
+                aux = aux->prox;
+
+            remover = aux->prox;
+            aux->prox = caminho->inicio;
+            caminho->fim = aux;
+            
+            free(remover);
+        }
+    }
 }
 
 No* buscar_caminho(Caminho *caminho, int id){
@@ -194,6 +222,6 @@ void imprimir_caminho(Caminho *caminho)
         } while (no != caminho->inicio);
         
     }
-    else printf("Erro ao alocar memoria!");
+    else printf("Caminho inexistente!");
     printf("\n");
 }

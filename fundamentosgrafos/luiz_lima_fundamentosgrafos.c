@@ -49,13 +49,14 @@ int dfs(Vertice *grafo, int id_atual, int id_destino, Caminho *caminho_atual, in
             } 
             else if ((objetivo == CIRCUITO || objetivo == TRILHA) && !dest->visitado)
             {
-                encontrado = dfs(grafo, lista_adj->dest, id_destino, caminho_atual, objetivo);
+                encontrado |= dfs(grafo, lista_adj->dest, id_destino, caminho_atual, objetivo);
             }
+
             lista_adj = lista_adj->prox;
         }
     }
 
-    remover_caminho(caminho_atual, id_atual);
+    remover_fim(caminho_atual);
     atual->visitado = 0;
 
     return encontrado;
@@ -267,7 +268,7 @@ int verificar_regular(Vertice *grafo)
 
 int imprimir_passeios();
 
-int imprimir_trilhas(Vertice *grafo)
+void imprimir_trilhas(Vertice *grafo)
 {
     Caminho *trilha = iniciar_caminho();
     Vertice *ref_inicio = grafo;
@@ -277,7 +278,7 @@ int imprimir_trilhas(Vertice *grafo)
         Vertice *aux = grafo->prox;
         while(aux)
         {
-            printf("Trilhas de %d a %d:\n", grafo->id, aux->id);
+            printf("\nTrilhas de %d a %d:\n", grafo->id, aux->id);
             dfs(ref_inicio, grafo->id, aux->id, trilha, TRILHA);
             aux = aux->prox;
         }
@@ -285,13 +286,13 @@ int imprimir_trilhas(Vertice *grafo)
     }
 }
 
-int imprimir_circuitos(Vertice *grafo)
+void imprimir_circuitos(Vertice *grafo)
 {
     Caminho *circuito = iniciar_caminho();
     Vertice *ref_inicio = grafo;
     while(grafo)
     {
-        printf("Circuitos de %d:\n", grafo->id);
+        printf("\nCircuitos de %d:\n", grafo->id);
         dfs(ref_inicio, grafo->id, grafo->id, circuito, CIRCUITO);
         grafo = grafo->prox;
     }
@@ -306,7 +307,7 @@ void imprimir_caminhos(Vertice *grafo)
         Vertice *aux = grafo->prox;
         while(aux)
         {
-            printf("Caminhos de %d a %d:\n", grafo->id, aux->id);
+            printf("\nCaminhos de %d a %d:\n", grafo->id, aux->id);
             if(grafo->id != aux->id)
             {
                 dfs(ref_inicio, grafo->id, aux->id, caminho, CAMINHO);
@@ -317,13 +318,13 @@ void imprimir_caminhos(Vertice *grafo)
     }
 }
 
-int imprimir_ciclos(Vertice *grafo)
+void imprimir_ciclos(Vertice *grafo)
 {
     Caminho *ciclo = iniciar_caminho();
     Vertice *ref_inicio = grafo;
     while(grafo)
     {
-        printf("Ciclos de %d:\n", grafo->id);
+        printf("\nCiclos de %d:\n", grafo->id);
         dfs(ref_inicio, grafo->id, grafo->id, ciclo, CICLO);
         grafo = grafo->prox;
     }
@@ -341,6 +342,7 @@ int main()
     inserir_aresta(&grafo, 1, 2);
     inserir_aresta(&grafo, 2, 3);
     inserir_aresta(&grafo, 3, 4);
+    inserir_aresta(&grafo, 3, 1);
     inserir_aresta(&grafo, 4, 1); 
     inserir_aresta(&grafo, 1, 3); 
     inserir_aresta(&grafo, 2, 2); 
@@ -373,7 +375,7 @@ int main()
 
     printf("\nGrau mínimo e máximo:\n");
     calcular_grau_extremos(grafo);
-/*
+
     printf("\nVerificando simplicidade do grafo:\n");
     if (verificar_simples(grafo))
         printf("O grafo é simples.\n");
@@ -409,7 +411,7 @@ int main()
 
     printf("\nCiclos no grafo:\n");
     imprimir_ciclos(grafo);
-*/
+
     imprimir_grafo(grafo);
     liberar_grafo(grafo);
 
