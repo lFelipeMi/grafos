@@ -26,7 +26,7 @@ int dfs(Vertice *grafo, int id_atual, int id_destino, Caminho *caminho_atual, in
         imprimir_caminho(caminho_atual); 
         encontrado = 1;
     } 
-    else if ((objetivo == CICLO || objetivo == CIRCUITO) && id_atual == id_destino && caminho_atual->tam > 1) 
+    else if ((objetivo == CICLO || objetivo == CIRCUITO) && id_atual == id_destino && caminho_atual->tam > 2) 
     {
         imprimir_caminho(caminho_atual); 
         encontrado = 1;
@@ -44,10 +44,10 @@ int dfs(Vertice *grafo, int id_atual, int id_destino, Caminho *caminho_atual, in
             if ((objetivo == CICLO || objetivo == CAMINHO) && !lista_adj->percorrida)
             {
                 lista_adj->percorrida = 1;
-                encontrado = dfs(grafo, lista_adj->dest, id_destino, caminho_atual, objetivo);
+                encontrado |= dfs(grafo, lista_adj->dest, id_destino, caminho_atual, objetivo);
                 lista_adj->percorrida = 0;
             } 
-            else if ((objetivo == CIRCUITO || objetivo == TRILHA) && !dest->visitado)
+            else if ((objetivo == CIRCUITO || objetivo == TRILHA) && (!dest->visitado || (dest->id == id_destino)))
             {
                 encontrado |= dfs(grafo, lista_adj->dest, id_destino, caminho_atual, objetivo);
             }
@@ -284,6 +284,8 @@ void imprimir_trilhas(Vertice *grafo)
         }
         grafo = grafo->prox;
     }
+
+    if(trilha) liberar_caminho(trilha);
 }
 
 void imprimir_circuitos(Vertice *grafo)
@@ -296,6 +298,8 @@ void imprimir_circuitos(Vertice *grafo)
         dfs(ref_inicio, grafo->id, grafo->id, circuito, CIRCUITO);
         grafo = grafo->prox;
     }
+
+    if(circuito) liberar_caminho(circuito);
 }
 
 void imprimir_caminhos(Vertice *grafo)
@@ -316,6 +320,8 @@ void imprimir_caminhos(Vertice *grafo)
         }
         grafo = grafo->prox;
     }
+
+    if(caminho) liberar_caminho(caminho);
 }
 
 void imprimir_ciclos(Vertice *grafo)
@@ -328,6 +334,8 @@ void imprimir_ciclos(Vertice *grafo)
         dfs(ref_inicio, grafo->id, grafo->id, ciclo, CICLO);
         grafo = grafo->prox;
     }
+
+    if(ciclo) liberar_caminho(ciclo);
 }
 
 int main()
