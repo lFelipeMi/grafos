@@ -190,6 +190,7 @@ void remover_fim(Caminho *caminho)
             
             free(remover);
         }
+        caminho->tam--;
     }
 }
 
@@ -220,6 +221,7 @@ void imprimir_caminho(Caminho *caminho)
             no = no->prox;
             if(no != caminho->inicio) printf(" -> ");
         } while (no != caminho->inicio);
+        printf("Tam: %d", caminho->tam);
         
     }
     else printf("Caminho inexistente!");

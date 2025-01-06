@@ -26,7 +26,7 @@ int dfs(Vertice *grafo, int id_atual, int id_destino, Caminho *caminho_atual, in
         imprimir_caminho(caminho_atual); 
         encontrado = 1;
     } 
-    else if ((objetivo == CICLO || objetivo == CIRCUITO) && id_atual == id_destino && caminho_atual->tam > 2) 
+    else if ((objetivo == CICLO || objetivo == CIRCUITO) && id_atual == id_destino && caminho_atual->tam > 1) 
     {
         imprimir_caminho(caminho_atual); 
         encontrado = 1;
