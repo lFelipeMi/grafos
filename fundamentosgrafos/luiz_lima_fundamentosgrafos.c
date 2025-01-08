@@ -67,7 +67,6 @@ int dfs(Vertice *grafo, int id_atual, int id_destino, Caminho *caminho_atual, in
 int verificar_conexo(Vertice *grafo)
 {
     int id1 = grafo->id;
-    int conexo = 1;
     Vertice *aux = grafo->prox;
     Caminho *caminho = iniciar_caminho();
 

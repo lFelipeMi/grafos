@@ -195,7 +195,6 @@ void remover_fim(Caminho *caminho)
 }
 
 No* buscar_caminho(Caminho *caminho, int id){
-    No *no = NULL;
     No *aux = caminho->inicio;
     
     if(aux){
