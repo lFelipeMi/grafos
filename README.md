@@ -14,7 +14,7 @@
 
 - **Passeios (ou Percursos)**: Sequência de vértices e arestas.
 - **Trilhas (ou Cadeias)**: Passeios onde todas as arestas são distintas.
-- **Caminhos**: Sequência de arestas que conecta um vértice de origem a um vértice de destino. Um caminho é **simples** se não passa pela mesma aresta mais de uma vez.
+- **Caminhos**: Sequência de arestas que conecta um vértice de origem a um vértice de destino. Um caminho é **simples** se não passa pela mesma aresta mais de uma vez, ou seja, não repete vértices.
   - **Distância**: Comprimento do menor caminho entre dois vértices.
   - **Diâmetro**: Maior distância entre quaisquer pares de vértices no grafo.
 - **Ciclos**: Caminhos que começam e terminam no mesmo vértice, sem repetir outros vértices. 
