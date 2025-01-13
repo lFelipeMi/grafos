@@ -44,8 +44,8 @@
 - **Grafo Planar**: Pode ser desenhado sem arestas que se cruzem. Pode ser colorido com no máximo 4 cores.
 - **Grafo Regular**: Todos os vértices têm o mesmo grau.
 - **Grafo Ponderado**: Cada aresta possui um peso ou custo.
-- **Grafo Pn**: Grafo simples em forma de lista ligada (ex.: \(P_4 = a - b - c - d\)).
-- **Grafo Cn**: Grafo simples cíclico (ex.: \(C_4 = a - b - c - d - a\)).
+- **Grafo Pn**: Grafo simples em forma de lista ligada (ex.: \(P4 = a - b - c - d\)).
+- **Grafo Cn**: Grafo simples cíclico (ex.: \(C4 = a - b - c - d - a\)).
 - **Grafo Kn**: Grafo simples completo, onde todos os vértices estão conectados entre si.
 - **Grafo K-Partido**:
   - Grafo onde os vértices podem ser divididos em \(K\) conjuntos, e não há arestas entre vértices do mesmo conjunto.
