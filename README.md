@@ -14,12 +14,12 @@
 
 - **Passeios (ou Percursos)**: Sequência de vértices e arestas.
 - **Trilhas (ou Cadeias)**: Passeios onde todas as arestas são distintas.
-- **Caminhos**: Sequência de arestas que conecta um vértice de origem a um vértice de destino. Um caminho é **simples** se não passa pela mesma aresta mais de uma vez, ou seja, não repete vértices.
+- **Circuitos**: Trilhas que começam e terminam no mesmo vértice.
+- **Caminhos**: Um caminho simples é uma sequência de arestas que percorre de um vértice origem a um vértice destino, não passando pelo mesmo vértice mais de uma vez.
   - **Distância**: Comprimento do menor caminho entre dois vértices.
   - **Diâmetro**: Maior distância entre quaisquer pares de vértices no grafo.
 - **Ciclos**: Caminhos que começam e terminam no mesmo vértice, sem repetir outros vértices. 
   - **Cintura (ou girth)**: Comprimento do menor ciclo em um grafo.
-- **Circuitos**: Caminhos que começam e terminam no mesmo vértice.
 - **Caminhos de Euler (Ponte de Königsberg)**:
   - Caminho ou circuito que contém todas as arestas do grafo.
   - Um multigrafo conexo tem um **circuito de Euler** se todos os vértices têm grau par.
@@ -31,6 +31,8 @@
 
 ## Tipos de Grafos
 
+- **Grafo Nulo**: Conjunto de vértices e arestas nulo.
+- **Grafo Vazio**: Conjunto de arestas vazio.
 - **Grafo Simples**: Sem arestas paralelas ou laços.
 - **Multigrafo**: Contém arestas paralelas ou laços.
 - **Grafo Não Direcionado**: Arestas indicam apenas conexão, sem direção (ex.: A - B).
