@@ -5,7 +5,7 @@
 - **Vértices adjacentes**: Ligados por uma aresta.
 - **Grau do vértice**: Quantidade de arestas que partem ou chegam ao vértice.
 - **Laços/Loops**: Aresta que conecta um vértice a ele mesmo (ex.: A - A). Um laço conta como 2 graus.
-- **Ordem do grafo**: Maior grau de um vértice no grafo.
+- **Ordem do grafo**: Quantidade de vértices no grafo.
 - **Coloração**: Atribuição de cores aos vértices, garantindo que vértices adjacentes tenham cores distintas.
 - **Número Cromático**: Número mínimo de cores necessárias para colorir o grafo.
 - **Arestas paralelas/múltiplas**: Arestas que ligam o mesmo par de vértices, independentemente do sentido.
