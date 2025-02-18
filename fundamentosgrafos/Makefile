@@ -25,5 +25,3 @@ run: $(TARGET)
 clean:
 	rm -f $(OBJS) $(TARGET)
 
-distclean: clean
-	rm -f *~

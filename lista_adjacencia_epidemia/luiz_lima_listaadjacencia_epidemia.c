@@ -102,7 +102,6 @@ int verificar_Aresta(Aresta *lista_adj, char id)
     return 0; // Aresta nao existe
 }
 
-// Metodos diferentes de insercao apenas para praticar
 void inserir_Aresta(Vertice *grafo, char id1, char id2) 
 {
     if (verificar_vertice(grafo, id1) && verificar_vertice(grafo, id2)) 
@@ -134,7 +133,6 @@ void inserir_Aresta(Vertice *grafo, char id1, char id2)
         printf("Um ou ambos os vertices %c ou %c nao existem!\n", id1, id2);
 }
 
-// "Gambiarra" pra inserir aresta nao direcionada 
 void inserir_aresta_simples(Vertice **grafo, char id1, char id2) 
 {
     inserir_Aresta(*grafo, id1, id2);
@@ -281,8 +279,8 @@ individuo, uma relacao por linha, em um arquivo texto.
 
         while (lista_adj) 
         {
-            if (grafo_aux->id < lista_adj->id) 
-            {
+            //if (grafo_aux->id < lista_adj->id) 
+            //{
                 int cond_alvo = buscar_condicao(grafo, lista_adj->id);
                 if (cond_alvo != -1)
                 {
@@ -291,7 +289,7 @@ individuo, uma relacao por linha, em um arquivo texto.
                 }
                 else 
                     printf("Erro: Nao foi possivel encontrar o vertice %c para calculo da probabilidade.\n", lista_adj->id);
-            }
+            //}
             lista_adj = lista_adj->prox;
         }
 
